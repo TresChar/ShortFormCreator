@@ -1,0 +1,41 @@
+{
+    "__comment": "Supported Backgrounds. Can add/remove background video here...",
+    
+    "csgo-surf": [
+        "https://www.youtube.com/watch?v=E-8JlyO59Io",
+        "csgo-surf.mp4",
+        "Aki",
+        "center"
+    ],
+    "minecraft2.1": [
+        "not sure why it is downloading this",
+        "parkour.mp4",
+        "minecraft2.1",
+        "center"
+    ],
+    "GTA5-1": [
+        "not sure why it is downloading this",
+        "1.mp4",
+        "GTA5",
+        "center"
+    ],
+    "minecraft1.1": [
+        "not sure why it is downloading this",
+        "1.1parkour.mp4",
+        "bbswitzer",
+        "center"
+    ],
+    "minecraft1.2": [
+        "not sure why it is downloading this",
+        "1.2parkour.mp4",
+        "bbswitzer",
+        "center"
+    ],
+    "subwaysurfers1.1":[
+        "not sure why it is downloading this",
+        "Subwaysurfers1.1.mp4",
+        "Cooling Heart",
+        "top"
+    ]
+    
+}

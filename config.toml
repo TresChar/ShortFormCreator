@@ -1,0 +1,56 @@
+[ai]
+ai_similarity_enabled = false
+ai_similarity_keywords = ""
+
+[settings]
+allow_nsfw = false
+theme = "transparent"
+times_to_run = 1
+opacity = 0.9
+storymode = true
+storymodemethod = 1
+storymode_max_length = 900
+resolution_w = 1080
+resolution_h = 1920
+zoom = 2.0
+
+[settings.background]
+background_video = "minecraft1.2"
+background_audio = "lofi"
+background_audio_volume = 0.3
+enable_extra_audio = false
+background_thumbnail = false
+background_thumbnail_font_family = "arial"
+background_thumbnail_font_size = 96
+background_thumbnail_font_color = "255,255,255"
+
+[settings.tts]
+voice_choice = "tiktok"
+random_voice = false
+elevenlabs_voice_name = "Bella"
+elevenlabs_api_key = ""
+aws_polly_voice = "Matthew"
+streamlabs_polly_voice = "Matthew"
+tiktok_voice = "en_us_001"
+tiktok_sessionid = "e56d79105d67e6f702549b2bb9e28c95"
+python_voice = "1"
+py_voice_num = "2"
+silence_duration = 0.3
+no_emojis = true
+family_friendly = true
+
+[reddit.creds]
+client_id = "I8MSSD4CHZIQcXjw5cBxMw"
+client_secret = "o4Ny-vrCXyoNPzkNxs3ahsoaTnaFvw"
+username = "Sad-context5379"
+password = "Remyboyz1738"
+2fa = false
+
+[reddit.thread]
+random = false
+subreddit = "amitheasshole"
+post_id = ""
+max_comment_length = 700
+min_comment_length = 1
+post_lang = ""
+min_comments = 20

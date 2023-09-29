@@ -1,0 +1,41 @@
+;Auto-generated Diamond Directive File. Can be deleted without harm.
+.Set CabinetNameTemplate=C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\~run.bat.CAB
+.Set CompressionType=LZX
+.Set CompressionLevel=7
+.Set InfFileName=C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\~run.bat_LAYOUT.INF
+.Set RptFileName=C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\~run.bat.RPT
+.Set MaxDiskSize=CDROM
+.Set ReservePerCabinetSize=0
+.Set InfCabinetLineFormat=*cab#*=Application Source Media,*cabfile*,0
+.Set Compress=on
+.Set CompressionMemory=21
+.Set DiskDirectoryTemplate=
+.Set Cabinet=ON
+.Set MaxCabinetSize=999999999
+.Set InfDiskHeader=
+.Set InfDiskLineFormat=
+.Set InfCabinetHeader=[SourceDisksNames]
+.Set InfFileHeader=
+.Set InfFileHeader1=[SourceDisksFiles]
+.Set InfFileLineFormat=*file*=*cab#*,,*size*,*csum*
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\.dockerignore"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\.gitattributes"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\.gitignore"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\.pylintrc"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\build.sh"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\CODE_OF_CONDUCT.md"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\config.toml"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\CONTRIBUTING.md"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\Dockerfile"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\ffmpeg.exe"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\ffplay.exe"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\ffprobe.exe"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\GUI.py"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\install.sh"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\LICENSE"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\main.py"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\ptt.py"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\README.md"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\requirements.txt"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\run.bat"
+"C:\Users\chart\My Drive\Python exceld\RedditVideoMakerBot\run.sh"
