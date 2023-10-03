@@ -5,7 +5,7 @@ import re
 import sys
 from moviepy.editor import AudioFileClip
 
-def create_srt_from_audio_mp3(mp3_name: str, sentence: str,reddit_object: dict):
+def create_srt_from_audio_mp3(mp3_name: str, sentences: str,reddit_object: dict):
     # Initialize variables
     audio_data = []
     sample_rate = 44100  # Adjust as needed
@@ -39,8 +39,12 @@ def create_srt_from_audio_mp3(mp3_name: str, sentence: str,reddit_object: dict):
     audio_data /= np.max(np.abs(audio_data))
 
     # Step 3: Generate SRT subtitles for each word
-    print(sentence)
-    words = re.findall(r'\w+\'?\w*', sentence)#error here
+    print(sentences)
+    for sentence in sentences:
+        words = re.findall(r'\w+\'?\w*', sentence)
+        print(words)
+
+    #words = re.findall(r'\w+\'?\w*', sentence)#error here
     start_time = 0
     srt_content = ""
 

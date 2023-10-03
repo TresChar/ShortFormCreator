@@ -418,7 +418,7 @@ def make_final_video(
             try:
                 from SubtitleCreation.srtcreation import create_srt_from_audio_mp3
                 mp3_name_without = "audio_without_title"
-                create_srt_from_audio_mp3(mp3_name=mp3_name_without,sentence=reddit_obj["thread_post"],reddit_object=reddit_obj)
+                create_srt_from_audio_mp3(mp3_name=mp3_name_without,sentences=reddit_obj["thread_post"],reddit_object=reddit_obj)
                 srt_file_full = f"assets/temp/{reddit_id}/audio_without_title.srt"
                 word_durations, word_count2 = process_srt_as_text(file_path=srt_file_full,word_count2=word_count2,word_durations=word_durations)
             except Exception as e:
