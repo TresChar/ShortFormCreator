@@ -87,6 +87,7 @@ def imagemaker(theme, reddit_obj: dict, text_object: dict, txtclr, padding=5, tr
             image_width, image_height = image.size
             split_text = text.split()
             full_split_text.append(split_text)
+            
             #wordwrap = textwrap.wrap(text, width=30)
             #print(f"splittext={split_text}")
             for word in split_text:
@@ -114,9 +115,9 @@ def imagemaker(theme, reddit_obj: dict, text_object: dict, txtclr, padding=5, tr
                 #draw_multiple_line_text(image, word, font, txtclr, padding, wrap=30, transparent=transparent)
                 #print(f"assets/temp/{id}/png/img{idx}-{word_count}.png")
                 image.save(f"assets/temp/{id}/png/img{idx}-{word_count}.png")  
-                #temp = [idx,word_count]
+                temp = [idx,word_count]
                 #print(f"temp={temp}")
-                #text_object["idx_and_word_count"].append(temp)
+                text_object["idx_and_word_count"].append(temp)
                   
         print("storymode=2")
         

@@ -5,10 +5,10 @@ ai_similarity_keywords = ""
 [settings]
 allow_nsfw = false
 theme = "transparent"
-times_to_run = 1
+times_to_run = 5
 opacity = 0.9
 storymode = true
-storymodemethod = 1
+storymodemethod = 2
 storymode_max_length = 900
 resolution_w = 1080
 resolution_h = 1920

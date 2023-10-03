@@ -136,6 +136,7 @@ def text_object_def(text_object: dict):
      content["idx"] = []     
      content["word count"] = []
      content["idx_and_word_count"] = []
+     content["words_for_srt"]=[]
      return content
 
 def main(POST_ID=None) -> None:
@@ -154,6 +155,7 @@ def main(POST_ID=None) -> None:
     download_background_video(bg_config["video"])
     download_background_audio(bg_config["audio"])
     chop_background(bg_config, length, reddit_object)
+    
     make_final_video(number_of_comments, length, reddit_object, bg_config,text_object)
 
 

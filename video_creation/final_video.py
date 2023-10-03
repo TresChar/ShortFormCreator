@@ -22,6 +22,9 @@ import vosk
 import sys
 from pydub import AudioSegment
 #from speech_recognition import *
+from moviepy.editor import VideoClip, TextClip, CompositeVideoClip
+import pysrt
+from PIL import Image
 
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 from moviepy.editor import AudioFileClip
@@ -201,6 +204,10 @@ def make_final_video(
                 for i in track(range(number_of_clips + 1), "Collecting the audio files...")
             ]
             audio_clips.insert(0, ffmpeg.input(f"assets/temp/{reddit_id}/mp3/title.mp3")) 
+            audio_clips_no_title = [
+                ffmpeg.input(f"assets/temp/{reddit_id}/mp3/postaudio-{i}.mp3")
+                for i in track(range(number_of_clips + 1), "Collecting the audio files...")
+            ]
             ##setting the stuff from engine 
             #collecting 0 seconds
             
@@ -208,12 +215,7 @@ def make_final_video(
                         
             # Assuming you have already defined 'reddit_id' and 'idx_and_word_count'
             #["v"].filter("minterpolate='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=120'").filter("minterpolate='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=120")
-            '''for item in track(idx_and_word_count, "removing spaces..."):
-                input_audio_path = f"assets/temp/{reddit_id}/mp3/word{item[0]}-{item[1]}.mp3"
-                output_audio_path = f"assets/temp/{reddit_id}/mp3/processed_word{item[0]}-{item[1]}.mp3"
-
-                # Call the function to remove silence from the audio clip
-                remove_silence_by_duration(input_audio_path, output_audio_path,silence_duration=0.2)'''
+       
 
                 # Create an ffmpeg input for the processed audio clip
                 #audio_clip = ffmpeg.input(output_audio_path)
@@ -274,6 +276,7 @@ def make_final_video(
         if settings.config["settings"]["storymodemethod"]==2:
             #audio_concat = ffmpeg.concat(*filtered_audio_clips, a=1, v=0)
             audio_concat = ffmpeg.concat(*audio_clips, a=1, v=0)
+            audio_clips_no_title_concat = ffmpeg.concat(*audio_clips_no_title, a=1, v=0)
         else:
             audio_concat = ffmpeg.concat(*audio_clips, a=1, v=0)
     else:
@@ -295,7 +298,21 @@ def make_final_video(
         print("error001")
         exit(1)
     console.log(f"[bold green] Video Will Be: {length} Seconds Long")
-
+    try:
+        ffmpeg.output(
+        audio_clips_no_title_concat, f"assets/temp/{reddit_id}/audio_without_title.mp3", **{"b:a": "192k"}
+    ).overwrite_output().run(quiet=True)
+        
+    except ffmpeg.Error as e:
+        
+        print(e.stderr.decode("utf8"))
+        
+        #print(e)
+        print("stderr:", e.stderr)
+        print("error005")
+        exit(1)
+    console.log(f"[bold green] Audio w/o title Video Will Be: {length} Seconds Long")
+    
     screenshot_width = int((W * 45) // 100)
     audio = ffmpeg.input(f"assets/temp/{reddit_id}/audio.mp3")
     final_audio = merge_background_audio(audio, reddit_id)
@@ -314,19 +331,7 @@ def make_final_video(
             "scale", screenshot_width, -1
         ),
     )
-    if settings.config["settings"]["storymode"]:
-        if settings.config["settings"]["storymodemethod"] == 1:
-            print("storymode==1")
-        if settings.config["settings"]["storymodemethod"] == 2:
-            
-            for item in idx_and_word_count:
-                        #count+=1   
-                        print(f"item={item}")
-                        temp= ffmpeg.input(f"assets/temp/{reddit_id}/png/img{item[0]}-{item[1]}.png")["v"].filter(
-                                "scale", screenshot_width, -1)
-                        word_image_clips.append(temp
-                                        )
-
+  
     current_time = 0
     if settings.config["settings"]["storymode"]:
         
@@ -388,118 +393,116 @@ def make_final_video(
                 )
                 for i in range(number_of_clips)
             ]
-
-            try:
-   
-
-                model_path = "vosk-model-en-us-0.22-lgraph"
-
-                word_timings = {}
-                words=[]
-                word_count2=0
-                word_audio_durations = []
-                for i in range(number_of_clips):
-                # Load your MP3 audio file
-                    mp3_audio_file = f"assets/temp/{reddit_id}/mp3/postaudio-{i}.mp3"
-                                        
-                
-                    # Load the audio
-                    audio = AudioSegment.from_mp3(mp3_audio_file)
-                    print(f"i = {i}length of i = {len(audio)}")
-                    # Split audio into segments based on silence
-                    audio_segments = split_on_silence(
-                        audio, silence_thresh=-40, min_silence_len=50, keep_silence=True
-                    )
-
-                    # Initialize a list to store word durations
-                    
-
-                    # Initialize a variable to keep track of the total duration including silence
-                    total_duration_with_silence = 0
-
-                    # Calculate and store the total duration of each word, including preceding silence
-                    for segment in audio_segments:
-                        word_count2+=1
-                        
-                        word_duration = len(segment) / 1000.0  # Convert from milliseconds to seconds
-                        total_duration_with_silence += word_duration
-                        word_audio_durations.append(total_duration_with_silence)
-                        print(f"Word {i} total duration (including silence): {total_duration_with_silence} seconds")
-
-
-                    # Now you have a list 'word_audio_durations' containing the total duration of each word
-                    # including the preceding silence.
-
-                    # Print the word durations (in seconds)
-                    #for i, duration in enumerate(word_audio_durations):
-                    
-                    # You can use this 'word_audio_durations' list to create
-                    # Load and convert the MP3 audio to WAV format
-                    
-                    '''with io.open(mp3_audio_file, "rb") as audio_file:
-                        content = audio_file.read()
-
-                    # Configure the audio input
-                    audio = speech_v1p1beta1.RecognitionAudio(content=content)
-
-                    # Configure the recognition request
-                    config = speech_v1p1beta1.RecognitionConfig(
-                        encoding=speech_v1p1beta1.RecognitionConfig.AudioEncoding.LINEAR16,
-                        sample_rate_hertz=16000,
-                        language_code="en-US",
-                        enable_word_time_offsets=True,  # Request word-level timing information
-                    )
-
-                    # Perform speech recognition
-                    response = client.recognize(config=config, audio=audio)'''
-
-                    """ # Extract word-level timing information and calculate word lengths
-                    current_time = 0  # Initialize current time to 0
-                    for result in response.results:
-                        for word_info in result.alternatives[0].words:
-                            word = word_info.word
-                            print(word)
-                            start_time = word_info.start_time.total_seconds()
-                            end_time = word_info.end_time.total_seconds()
-                            word_duration = end_time - start_time
-
-                            # Add start silence duration to the word duration
-                            word_duration += start_time  # You can adjust this as needed
-
-                            # Overlay the word with the calculated gap duration
-                            background_clip = background_clip.overlay(
-                                image_clips[i],  # Replace with the appropriate image clip
-                                enable=f"between(t,{current_time},{current_time + word_duration})",
-                                x="(main_w-overlay_w)/2",
-                                y="(main_h-overlay_h)/2",
-                            )
-
-                            # Update the current time for the next iteration
-                            current_time += word_duration """
-
-
-            except ffmpeg.Error as e:
-                print(f"error#003 e.stderr={e.stderr}")
-
-            '''try:
-                audio_clips_word_durations.insert(
+            audio_clips_durations.insert(
                 0,
                 float(ffmpeg.probe(f"assets/temp/{reddit_id}/mp3/title.mp3")["format"]["duration"]),
+            )
+            for item in idx_and_word_count:
+                #count+=1   
+                print(f"item={item}")
+                temp= ffmpeg.input(f"assets/temp/{reddit_id}/png/img{item[0]}-{item[1]}.png")["v"].filter(
+                        "scale", screenshot_width, -1)
+                word_image_clips.append(temp
+                                )
+            try:
+                word_durations = []
+                word_durations.append(
+                    
+                float(ffmpeg.probe(f"assets/temp/{reddit_id}/mp3/title.mp3")["format"]["duration"])
                 )
+                print(word_durations)
+                word_count2=0
+                print(f"number of clips ={number_of_clips}")
             except ffmpeg.Error as e:
-                print(e)'''
-
+                print(f"Error: {e.stderr}") 
+            try:
+                from SubtitleCreation.srtcreation import create_srt_from_audio_mp3
+                mp3_name_without = "audio_without_title"
+                create_srt_from_audio_mp3(mp3_name=mp3_name_without,sentence=reddit_obj["thread_post"],reddit_object=reddit_obj)
+                srt_file_full = f"assets/temp/{reddit_id}/audio_without_title.srt"
+                word_durations, word_count2 = process_srt_as_text(file_path=srt_file_full,word_count2=word_count2,word_durations=word_durations)
+            except Exception as e:
+                print(f"create-srt-without{e}")
             
+                
+            try:
+                for i in range(number_of_clips):
+            
+                    # Load your MP3 audio file
+                    #mp3_audio_file = f"assets/temp/{reddit_id}/mp3/postaudio-{i}.mp3"
+
+                    # Load the corresponding SRT subtitle file
+                    srt_file = f"assets/temp/{reddit_id}/mp3/postaudio-{i}.srt"
+                    print(srt_file)
+                    
+                    
+    
+                    """ try:
+                        word_durations, word_count2 = process_srt_as_text(file_path=srt_file,word_count2=word_count2,word_durations=word_durations)
+                    except Exception as ex:
+                        print(f"ex={ex}") """
+            
+        
+                # Load your MP3 audio file
+                #mp3_audio_file = f"assets/temp/{reddit_id}/mp3/postaudio-{i}.mp3"
+
+                # Load the corresponding SRT subtitle file
+                """ srt_file = f"assets/temp/{reddit_id}/audio.srt"
+                print(srt_file)
+                from SubtitleCreation.srtcreation import create_srt_from_mp3
+                from TTS.engine_wrapper import process_text
+                create_srt_from_mp3(f"audio", process_text(text),reddit_object=reddit_obj)
+
+                try:
+                    word_durations, word_count2 = process_srt_as_text(file_path=srt_file,word_count2=word_count2,word_durations=word_durations)
+                except Exception as ex:
+                    print(f"ex={ex}") """
+                """  # Your code for processing the audio and subtitles goes here
+
+                    # Calculate and store the total duration of each word, including preceding silence
+                    try:
+                        for segment in srt_file:
+                            print(segment)
+                            word_duration = len(segment) / 1000.0  # Convert from milliseconds to seconds
+                            
+                            word_durations.append(float(word_duration))
+                            print(f"Sentence {i}, Word duration: {word_duration} seconds")
+                            #check if missing a gap here
+                            temp2 = word_duration
+                            print(temp2)
+                            word_count2 += 1
+                        for segment in srt_file:
+        # Calculate the word duration in seconds (assuming words are separated by spaces)
+                            words = segment.text.split()
+                            print(words)
+                            word_duration = len(words) / 1000.0  # Convert from milliseconds to seconds
+                            word_durations.append(word_duration)
+                            word_count2+=1
+                            print(f"Subtitle {segment.index}: Word duration: {word_duration} seconds")
+                            
+                            #word_count += len(words)
+                    except Exception as e:
+                        print(e)
+                    # Print the total word count and word durations
+                    print(f"Total Word Count: {word_count2}")
+                    print(f"Word Durations: {word_durations}") """
+
+
+
+            except Exception as e:
+                print(f"Error6: {e}")
+            print(word_durations)
+
 
             
             print(word_count2)
-            for i in range(word_count2):
+            for i in range(word_count2+1):
                 print(i)
                 
                 
                 background_clip = background_clip.overlay(
                     word_image_clips[i],
-                    enable=f"between(t,{current_time},{current_time + word_audio_durations[i]})",
+                    enable=f"between(t,{current_time},{current_time + word_durations[i]})",
                     x="(main_w-overlay_w)/2",
                     y="(main_h-overlay_h)/2",
                 )
@@ -508,9 +511,9 @@ def make_final_video(
                 #print(image_clips[count])
                 #print(image_clips)
                 #print(f"audio_durations={audio_clips_durations[i]}")
-                print(f"word_audio_durations={word_audio_durations[i]}")
+                print(f"word_audio_durations={word_durations[i]}")
                 #current_time += audio_clips_durations[i]
-                current_time += word_audio_durations[i] 
+                current_time += word_durations[i] 
                 
     else:
         for i in range(0, number_of_clips + 1):
@@ -632,6 +635,11 @@ def make_final_video(
             )
         #except Exception as ex:
          #   print(ex)
+        except FileNotFoundError as e:
+            if e.winerror == 206:
+                print(f"Error: {e}. Skipping file: {path}")
+                  # Continue to the next iteration of the loop
+
         except ffmpeg.Error as e:
             print(e.stderr.decode("utf8"))
             #exit(1)
@@ -769,7 +777,50 @@ def remove_silence_by_duration(input_audio_path, output_audio_path, silence_dura
         
         # Trim silence from the beginning
     
+def process_srt_as_text(file_path:str,word_count2:int,word_durations:[]):
+    #word_durations = []
+    
 
+    with open(file_path, 'r') as srt_file:
+        lines = srt_file.readlines()
+
+    j = 0
+    while j < len(lines):
+        print(f"j={j}")
+         
+        length = lines[j].strip()
+        start_end_time = lines[j + 1].strip()
+        word = lines[j + 2].strip()
+        print(f"start_end_time={start_end_time},length={length}word={word}")
+
+        # Convert start_time and end_time to seconds
+
+        start_time, end_time = start_end_time.split(" --> ")
+        print(f"start_time={start_time}endtime={end_time}")
+        start_time_seconds = float(start_time.replace(':', '.'))*10.0
+
+        end_time_seconds = float(end_time.replace(':', '.'))*10.0
+        duration_seconds = end_time_seconds - start_time_seconds
+        print(f"start_time={start_time},end_time={end_time}start_time_seconds={start_time_seconds}end_time_seconds={end_time_seconds}duration_seconds={duration_seconds}")
+        
+        # Read the subtitle text
+        
+        # Print the subtitle and its duration
+        print(f"Subtitle: {word}")
+        print(f"Duration: {duration_seconds} seconds")
+        
+
+        # Append the duration to the word_durations list
+        word_durations.append(float(duration_seconds))
+        word_count2 += 1
+        j +=3
+        # Skip empty lines
+        j += 1
+
+    # Print the total word count and word durations
+    print(f"Total Word Count: {word_count2}")
+    print(f"Word Durations: {word_durations}")
+    return word_durations, word_count2
 
 
 

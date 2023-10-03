@@ -39,4 +39,4 @@ def posttextparser(obj, *, tried: bool = False) -> List[str]:
             newtext.append(line.text)
     print(f"newtext={newtext}")
     #i think it will still readit out as single words
-    return words
+    return newtext

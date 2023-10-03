@@ -13,7 +13,7 @@ from rich.progress import track
 from utils import settings
 from utils.console import print_step, print_substep
 from utils.voice import sanitize_text
-
+from SubtitleCreation.srtcreation import create_srt_from_mp3
 
 DEFAULT_MAX_LENGTH: int = (
     50  # Video length variable, edit this on your own risk. It should work, but it's not supported
@@ -79,7 +79,7 @@ class TTSEngine:
         # processed_text = ##self.reddit_object["thread_post"] != ""
         idx = 0
         texts = self.reddit_object["thread_post"]
-
+        #print(texts)
         if settings.config["settings"]["storymode"]:
             if settings.config["settings"]["storymodemethod"] == 0:
                 if len(self.reddit_object["thread_post"]) > self.tts_module.max_chars:
@@ -91,13 +91,15 @@ class TTSEngine:
                     self.call_tts(f"postaudio-{idx}", process_text(text),word=False)
             elif settings.config["settings"]["storymodemethod"] == 2:
                 
+                
                 full_split_text =[""]
                 for idx_word, text in track(enumerate(texts), "Rendering Image"):
                     #text = process_text(text, False)
                     word_count=0
                     split_text = text.split()
                     full_split_text.append(split_text)
-                    for word in split_text:
+                    """ look in here for wherever the create silence is maybe and add that to imbetween the subtitles. """
+                    '''for word in split_text:
                         
                         word_count+=1
                         self.text_object["words"].append(process_text(word))
@@ -110,19 +112,23 @@ class TTSEngine:
                         temp = [idx_word,word_count]
                         self.text_object["idx_and_word_count"].append(temp)
                         #dont think it will return
-                    self.text_object["word count"]=(word_count)
+                        self.text_object["word count"]=(word_count)
                 #for item in track(enumerate(full_split_text)):
                  #   self.call_tts(f"wordbyword-")
                         #draw_single_word(image, text, font, txtclr, padding, wrap=30, transparent=transparent)
                         #word_width, word_height = font.getsize(word)
                         #temp = [idx,word_count]
                         #print(f"temp={temp}")
-                        #text_object["idx_and_word_count"].append(temp)
+                        #text_object["idx_and_word_count"].append(temp)'''
                         
                 print("enginewrapper=2")
+                #code for making .srt files for each audio clip. Commented out 03/10/23 Trying to do it all together at the end to fix timing issues 
                 for idx, text in track(enumerate(self.reddit_object["thread_post"])):
+                    #print(text)
                     self.call_tts(f"postaudio-{idx}", process_text(text),word=False)
-    
+                    #self.text_object["words_for_srt"].append(process_text(text))
+                    #create_srt_from_mp3(f"postaudio-{idx}", process_text(text),reddit_object=self.reddit_object)
+     
         
 
         else:
@@ -151,7 +157,7 @@ class TTSEngine:
             )
         ]
         #19/09/23
-        #self.create_silence_mp3()
+        self.create_silence_mp3()
 
         idy = None
         for idy, text_cut in enumerate(split_text):
